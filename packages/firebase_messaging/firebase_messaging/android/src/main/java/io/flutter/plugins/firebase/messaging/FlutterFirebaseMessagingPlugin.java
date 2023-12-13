@@ -40,6 +40,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import android.util.Log;
+
 /** FlutterFirebaseMessagingPlugin */
 public class FlutterFirebaseMessagingPlugin extends BroadcastReceiver
     implements FlutterFirebasePlugin,
@@ -60,6 +62,8 @@ public class FlutterFirebaseMessagingPlugin extends BroadcastReceiver
 
   FlutterFirebasePermissionManager permissionManager;
 
+  private static final String TAG = "FlutterFirebaseMessaging";
+
   private void initInstance(BinaryMessenger messenger) {
     String channelName = "plugins.flutter.io/firebase_messaging";
     channel = new MethodChannel(messenger, channelName);
@@ -78,16 +82,19 @@ public class FlutterFirebaseMessagingPlugin extends BroadcastReceiver
 
   @Override
   public void onAttachedToEngine(FlutterPluginBinding binding) {
+    Log.w(TAG, "onAttachedToEngine");
     initInstance(binding.getBinaryMessenger());
   }
 
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+    Log.w(TAG, "onDetachedFromEngine");
     LocalBroadcastManager.getInstance(binding.getApplicationContext()).unregisterReceiver(this);
   }
 
   @Override
   public void onAttachedToActivity(ActivityPluginBinding binding) {
+    Log.w(TAG, "onAttachedToActivity");
     binding.addOnNewIntentListener(this);
     binding.addRequestPermissionsResultListener(permissionManager);
     this.mainActivity = binding.getActivity();
@@ -101,23 +108,27 @@ public class FlutterFirebaseMessagingPlugin extends BroadcastReceiver
 
   @Override
   public void onDetachedFromActivityForConfigChanges() {
+    Log.w(TAG, "onDetachedFromActivityForConfigChanges");
     this.mainActivity = null;
   }
 
   @Override
   public void onReattachedToActivityForConfigChanges(ActivityPluginBinding binding) {
+    Log.w(TAG, "onReattachedToActivityForConfigChanges");
     binding.addOnNewIntentListener(this);
     this.mainActivity = binding.getActivity();
   }
 
   @Override
   public void onDetachedFromActivity() {
+    Log.w(TAG, "onDetachedFromActivity");
     this.mainActivity = null;
   }
 
   // BroadcastReceiver implementation.
   @Override
   public void onReceive(Context context, Intent intent) {
+    Log.w(TAG, "onReceive");
     String action = intent.getAction();
 
     if (action == null) {
